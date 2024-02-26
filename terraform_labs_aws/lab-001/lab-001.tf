@@ -1,6 +1,6 @@
 resource "aws_instance" "simple_ec2" {
   ami                    = var.ec2_ami
-  instance_type          = var.ec2_resource_type
+  instance_type          = var.ec2_instance_type
   tags                   = var.resource_tags
   key_name               = var.ec2_ssh_key
   vpc_security_group_ids = [aws_security_group.remote_access_sg.id]
