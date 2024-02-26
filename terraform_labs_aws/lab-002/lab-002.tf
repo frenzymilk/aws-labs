@@ -1,16 +1,19 @@
 resource "aws_instance" "simple_ec2" {
-  name          = "simple-ec2"
+
   ami           = var.ec2_ami
   instance_type = var.ec2_instance_type
-  tags          = var.resource_tags
-  subnet_id     = aws_subnet.lab_002_private_sub.id
+  tags = {
+    Name = "simple-ec2"
+  }
+  subnet_id = aws_subnet.lab_002_private_sub.id
 }
 
 resource "aws_instance" "bastion_ec2" {
-  name                   = "bastion"
-  ami                    = var.ec2_ami
-  instance_type          = var.ec2_resource_type
-  tags                   = var.resource_tags
+  ami           = var.ec2_ami
+  instance_type = var.ec2_resource_type
+  tags = {
+    Name = "bastion-ec2"
+  }
   key_name               = var.ec2_ssh_key
   subnet_id              = aws_subnet.lab_002_public_sub.id
   vpc_security_group_ids = [aws_security_group.remote_access_sg.id]
@@ -87,7 +90,6 @@ resource "aws_security_group" "remote_access_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = resource_tags
 }
 
 
