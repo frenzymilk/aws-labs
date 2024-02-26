@@ -24,5 +24,5 @@ resource "aws_security_group" "remote_access_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = resource_tags
+  tags = var.resource_tags
 }
