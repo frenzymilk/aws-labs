@@ -57,19 +57,16 @@ jobs:
         id: fmt
         run: terraform fmt -check
         continue-on-error: true
-        working-directory: "./terraform_labs_aws/lab-001"
 
 
       - name: Terraform Init
         id: init
         run: terraform init
-        working-directory: "./terraform_labs_aws/lab-001"
 
         
       - name: Terraform Validate
         id: validate
         run: terraform validate 
-        working-directory: "./terraform_labs_aws/lab-001"
 
 
       - name: Terraform Plan
