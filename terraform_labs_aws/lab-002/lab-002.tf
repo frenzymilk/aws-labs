@@ -5,7 +5,8 @@ resource "aws_instance" "simple_ec2" {
   tags = {
     Name = "simple-ec2"
   }
-  subnet_id = aws_subnet.lab_002_private_sub.id
+  subnet_id              = aws_subnet.lab_002_private_sub.id
+  vpc_security_group_ids = [aws_security_group.bastion_access_sg.id]
 }
 
 resource "aws_instance" "bastion_ec2" {
