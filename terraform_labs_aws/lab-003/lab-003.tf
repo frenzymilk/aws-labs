@@ -24,7 +24,7 @@ resource "aws_instance" "bastion_ec2" {
 # network access
 
 resource "aws_eip" "public_ip" {
-  domain = "vpc"
+  #domain = "vpc"
 }
 
 resource "aws_vpc" "lab_003_vpc" {
@@ -112,7 +112,7 @@ resource "aws_security_group" "remote_access_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["${var.my_ip}/32"]
+    cidr_blocks = ["${var.my_public_ip}/32"]
   }
 
   egress {
