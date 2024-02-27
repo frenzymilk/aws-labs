@@ -16,8 +16,8 @@ resource "aws_instance" "bastion_ec2" {
   tags = {
     Name = "bastion-ec2"
   }
-  key_name               = var.ec2_ssh_key
-  subnet_id              = aws_subnet.lab_004_public_sub.id
+  key_name = var.ec2_ssh_key
+  #subnet_id              = aws_subnet.lab_004_public_sub.id
   vpc_security_group_ids = [aws_security_group.nat_bastion_access_sg.id]
 
   user_data = <<-EOL
@@ -34,11 +34,19 @@ resource "aws_instance" "bastion_ec2" {
               EOL
 }
 
+resource "aws_network_interface" "bastion_eni" {
+  subnet_id       = aws_subnet.lab_004_public_sub.id
+  private_ips     = ["192.168.1.10"]
+  security_groups = [aws_security_group.nat_bastion_access_sg.id]
+
+  attachment {
+    instance     = aws_instance.bastion_ec2.id
+    device_index = 1
+  }
+}
+
 # network access
 
-/*resource "aws_eip" "public_ip" {
-  domain = "vpc"
-}*/
 
 resource "aws_vpc" "lab_004_vpc" {
   cidr_block = "192.168.0.0/16"
@@ -69,8 +77,6 @@ resource "aws_route_table" "lab_004_nat_rt" {
 resource "aws_route_table_association" "lab_004_nat_rta" {
   subnet_id      = aws_subnet.lab_004_private_sub.id
   route_table_id = aws_route_table.lab_004_nat_rt.id
-
-  depends_on = [aws_route_table.lab_004_nat_rt]
 }
 
 # public conf
