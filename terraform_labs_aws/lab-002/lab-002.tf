@@ -10,7 +10,7 @@ resource "aws_instance" "simple_ec2" {
 
 resource "aws_instance" "bastion_ec2" {
   ami           = var.ec2_ami
-  instance_type = var.ec2_resource_type
+  instance_type = var.ec2_instance_type
   tags = {
     Name = "bastion-ec2"
   }
