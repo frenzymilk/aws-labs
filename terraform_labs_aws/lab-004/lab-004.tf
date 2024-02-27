@@ -61,14 +61,16 @@ resource "aws_subnet" "lab_004_private_sub" {
 resource "aws_route_table" "lab_004_nat_rt" {
   vpc_id = aws_vpc.lab_004_vpc.id
   route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_instance.bastion_ec2.id
+    cidr_block           = "0.0.0.0/0"
+    network_interface_id = aws_instance.bastion_ec2.network_interface_id
   }
 }
 
 resource "aws_route_table_association" "lab_004_nat_rta" {
   subnet_id      = aws_subnet.lab_004_private_sub.id
   route_table_id = aws_route_table.lab_004_nat_rt.id
+
+  depends_on = [aws_route_table.lab_004_nat_rt]
 }
 
 # public conf
