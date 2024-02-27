@@ -121,14 +121,14 @@ resource "aws_security_group" "nat_bastion_access_sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["${aws_instance.simple_ec2.private_ip}/24"]
+    cidr_blocks = ["${aws_instance.simple_ec2.private_ip}/32"]
   }
 
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["${aws_instance.simple_ec2.private_ip}/24"]
+    cidr_blocks = ["${aws_instance.simple_ec2.private_ip}/32"]
   }
 
   egress {
