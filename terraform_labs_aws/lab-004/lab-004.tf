@@ -70,7 +70,7 @@ resource "aws_route_table" "lab_004_nat_rt" {
   vpc_id = aws_vpc.lab_004_vpc.id
   route {
     cidr_block           = "0.0.0.0/0"
-    network_interface_id = aws_instance.bastion_ec2.network_interface_id
+    network_interface_id = aws_network_interface.bastion_eni.id
   }
 }
 
