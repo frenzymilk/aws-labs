@@ -150,7 +150,7 @@ resource "aws_security_group" "bastion_access_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["${aws_instance.bastion_ec2.private_ip}/32"]
+    cidr_blocks = ["192.168.1.0/24"]
   }
 
   egress {
