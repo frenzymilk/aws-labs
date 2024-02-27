@@ -132,10 +132,10 @@ resource "aws_security_group" "bastion_access_sg" {
   vpc_id      = aws_vpc.lab_003_vpc.id
 
   ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["${var.my_public_ip}/32"]
+    from_port       = 22
+    to_port         = 22
+    protocol        = "tcp"
+    security_groups = [aws_security_group.remote_access_sg.id]
   }
 
   egress {
