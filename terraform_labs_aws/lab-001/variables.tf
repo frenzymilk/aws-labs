@@ -6,13 +6,13 @@ variable "aws_region" {
 
 variable "aws_region_az1" {
   description = "AWS Region"
-  default     = "use1-az1"
+  default     = "us-east-1a"
   type        = string
 }
 
 variable "aws_region_az2" {
   description = "AWS Region"
-  default     = "use1-az2"
+  default     = "us-east-1b"
   type        = string
 }
 
