@@ -17,7 +17,6 @@ resource "aws_instance" "bastion_ec2" {
     Name = "bastion-ec2"
   }
   key_name               = var.ec2_ssh_key
-  network_interface_id   = aws_network_interface.bastion_eni.id
   subnet_id              = aws_subnet.lab_004_public_sub.id
   vpc_security_group_ids = [aws_security_group.nat_bastion_access_sg.id]
 
