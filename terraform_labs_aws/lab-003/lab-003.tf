@@ -1,6 +1,7 @@
 resource "aws_instance" "simple_ec2" {
   ami                    = var.ec2_ami
   instance_type          = var.ec2_instance_type
+  key_name               = var.ec2_ssh_key
   vpc_security_group_ids = [aws_security_group.bastion_access_sg.id]
   subnet_id              = aws_subnet.lab_003_private_sub.id
   tags = {
