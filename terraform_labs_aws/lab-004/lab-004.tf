@@ -28,7 +28,7 @@ resource "aws_instance" "bastion_ec2" {
               echo "net.ipv4.ip_forward=1" >> /etc/sysctl.d/custom-ip-forwarding.conf
               sysctl -p /etc/sysctl.d/custom-ip-forwarding.conf
               interface=$(netstat -i | awk 'NR==4{ print $1 }')
-              /sbin/iptables -t nat -A POSTROUTING -o \$interface -j MASQUERADE
+              /sbin/iptables -t nat -A POSTROUTING -o $interface -j MASQUERADE
               /sbin/iptables -F FORWARD
               service iptables save
               EOL
