@@ -27,11 +27,15 @@ resource "aws_instance" "bastion_ec2" {
               systemctl start iptables
               echo "net.ipv4.ip_forward=1" >> /etc/sysctl.d/custom-ip-forwarding.conf
               sysctl -p /etc/sysctl.d/custom-ip-forwarding.conf
-              interface=\$(netstat -i | awk 'NR==3{ print $1 }')
+              interface=$(netstat -i | awk 'NR==3{ print $1 }')
               /sbin/iptables -t nat -A POSTROUTING -o \$interface -j MASQUERADE
               /sbin/iptables -F FORWARD
               service iptables save
               EOL
+}
+
+resource "aws_eip" "public_ip" {
+  #domain = "vpc"
 }
 
 resource "aws_network_interface" "bastion_eni" {
@@ -43,6 +47,11 @@ resource "aws_network_interface" "bastion_eni" {
     instance     = aws_instance.bastion_ec2.id
     device_index = 1
   }
+}
+
+resource "aws_eip_association" "bastion_ip_association" {
+  network_interface_id = aws_network_interface.bastion_eni.id
+  allocation_id        = aws_eip.public_ip.id
 }
 
 # network access
