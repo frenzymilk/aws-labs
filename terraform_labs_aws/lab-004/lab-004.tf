@@ -27,7 +27,7 @@ resource "aws_instance" "bastion_ec2" {
               systemctl start iptables
               echo "net.ipv4.ip_forward=1" >> /etc/sysctl.d/custom-ip-forwarding.conf
               sysctl -p /etc/sysctl.d/custom-ip-forwarding.conf
-              interface=$(netstat -i | awk 'NR==3{ print $1 }')
+              interface=$(netstat -i | awk 'NR==4{ print $1 }')
               /sbin/iptables -t nat -A POSTROUTING -o \$interface -j MASQUERADE
               /sbin/iptables -F FORWARD
               service iptables save
@@ -138,14 +138,14 @@ resource "aws_security_group" "nat_bastion_access_sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["192.168.2.0/24"]
   }
 
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["192.168.2.0/24"]
   }
 
   egress {
