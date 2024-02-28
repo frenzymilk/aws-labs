@@ -39,9 +39,10 @@ resource "aws_eip" "public_ip" {
 }
 
 resource "aws_network_interface" "bastion_eni" {
-  subnet_id       = aws_subnet.lab_004_public_sub.id
-  private_ips     = ["192.168.1.10"]
-  security_groups = [aws_security_group.nat_bastion_access_sg.id]
+  subnet_id         = aws_subnet.lab_004_public_sub.id
+  private_ips       = ["192.168.1.10"]
+  security_groups   = [aws_security_group.nat_bastion_access_sg.id]
+  source_dest_check = false
 
   attachment {
     instance     = aws_instance.bastion_ec2.id
