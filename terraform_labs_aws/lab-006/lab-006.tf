@@ -75,16 +75,16 @@ resource "aws_launch_configuration" "configuration" {
                     EOL
   lifecycle {
     create_before_destroy = true
-    ignore_changes        = [desired_capacity]
+    ignore_changes        = ["desired_capacity"]
   }
 
 }
 
 resource "aws_autoscaling_group" "autoscale" {
   name                 = "autoscaling-group"
-  desired_capacity     = 1
-  max_size             = 2
-  min_size             = 1
+  desired_capacity     = 2
+  max_size             = 3
+  min_size             = 2
   health_check_type    = "EC2"
   termination_policies = ["OldestInstance"]
   vpc_zone_identifier  = [aws_subnet.lab_006_az1_sub.id, aws_subnet.lab_006_az2_sub.id]
