@@ -112,5 +112,4 @@ resource "aws_security_group" "remote_http_access_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = resource_tags
 }
