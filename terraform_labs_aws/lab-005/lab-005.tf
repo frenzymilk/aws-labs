@@ -76,18 +76,18 @@ resource "aws_lb_listener" "alb_listener_http" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.target_group_http.arn
+    target_group_arn = aws_lb_target_group.target_http.arn
   }
 }
 
 resource "aws_lb_target_group_attachment" "ec2_attach_1" {
-  target_group_arn = aws_lb_target_group.target_group_http.arn
+  target_group_arn = aws_lb_target_group.target_http.arn
   target_id        = aws_instance.server_az1.id
 }
 
 
 resource "aws_lb_target_group_attachment" "ec2_attach_2" {
-  target_group_arn = aws_lb_target_group.target_group_http.arn
+  target_group_arn = aws_lb_target_group.target_http.arn
   target_id        = aws_instance.server_az2.id
 }
 
