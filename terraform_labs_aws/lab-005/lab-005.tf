@@ -4,9 +4,9 @@ resource "aws_instance" "server_az1" {
   tags = {
     Name = "server_az1"
   }
-  subnet_id              = aws_subnet.lab_005_private_sub.id
+  subnet_id              = aws_subnet.lab_005_az1_sub.id
   vpc_security_group_ids = [aws_security_group.remote_http_access_sg.id]
-  key_name               = var.ec2_ssh_key
+  #key_name               = var.ec2_ssh_key
 
   user_data = <<-EOL
               #!/bin/bash -xe
@@ -15,7 +15,7 @@ resource "aws_instance" "server_az1" {
               systemctl enable httpd
               systemctl start httpd
               cd /var/www/html
-              echo "This is INSTANCE ${HOSTNAME}" > index.html
+              echo "This is an az1 instance" > index.html
               EOL
 }
 
@@ -25,9 +25,9 @@ resource "aws_instance" "server_az2" {
   tags = {
     Name = "server_az2"
   }
-  subnet_id              = aws_subnet.lab_005_private_sub.id
+  subnet_id              = aws_subnet.lab_005_az2_sub.id
   vpc_security_group_ids = [aws_security_group.remote_http_access_sg.id]
-  key_name               = var.ec2_ssh_key
+  #key_name               = var.ec2_ssh_key
 
   user_data = <<-EOL
               #!/bin/bash -xe
@@ -36,7 +36,7 @@ resource "aws_instance" "server_az2" {
               systemctl enable httpd
               systemctl start httpd
               cd /var/www/html
-              echo "This is INSTANCE ${HOSTNAME}" > index.html
+              echo "This is an az2 instance" > index.html
               EOL
 }
 
@@ -71,7 +71,7 @@ resource "aws_lb_target_group" "target_group_http" {
 }
 
 resource "aws_lb_target_group" "target_group_https" {
-  name        = "alb_https_tg"
+  name        = "alb-https-tg"
   port        = 443
   protocol    = "HTTPS"
   target_type = "instance"
@@ -143,7 +143,7 @@ data "aws_route_table" "default_routetable" {
 }
 
 resource "aws_route" "r" {
-  route_table_id         = aws_route_table.default_routetable.id
+  route_table_id         = data.aws_route_table.default_routetable.id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.lab_005_gw.id
 }
@@ -177,12 +177,12 @@ resource "aws_internet_gateway" "lab_005_gw" {
 
 resource "aws_route_table_association" "lab_005_az1_rta" {
   subnet_id      = aws_subnet.lab_005_az1_sub.id
-  route_table_id = aws_route_table.default_routetable.id
+  route_table_id = data.aws_route_table.default_routetable.id
 }
 
 resource "aws_route_table_association" "lab_005_az2_rta" {
   subnet_id      = aws_subnet.lab_005_az2_sub.id
-  route_table_id = aws_route_table.default_routetable.id
+  route_table_id = data.aws_route_table.default_routetable.id
 }
 
 # security groups
@@ -192,13 +192,13 @@ resource "aws_security_group" "remote_http_access_sg" {
   description = "Enable HTTP forwarding and remote access"
   vpc_id      = aws_vpc.lab_005_vpc.id
 
-  ingress {
+  /*ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["${var.my_public_ip}/32"]
   }
-
+*/
   ingress {
     from_port       = 80
     to_port         = 80
@@ -221,13 +221,13 @@ resource "aws_security_group" "alb_sg" {
   description = "Enable HTTP forwarding and remote access"
   vpc_id      = aws_vpc.lab_005_vpc.id
 
-  ingress {
+  /*ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["${var.my_public_ip}/32"]
   }
-
+*/
   ingress {
     from_port   = 80
     to_port     = 80
