@@ -86,7 +86,7 @@ resource "aws_autoscaling_group" "autoscale" {
   termination_policies      = ["OldestInstance"]
   vpc_zone_identifier       = [aws_subnet.lab_006_az1_sub.id, aws_subnet.lab_006_az2_sub.id]
   launch_configuration      = aws_launch_configuration.configuration.name
-  wait_for_capacity_timeout = "15"
+  wait_for_capacity_timeout = "15m"
 }
 
 # security groups
