@@ -78,14 +78,15 @@ resource "aws_launch_configuration" "configuration" {
 }
 
 resource "aws_autoscaling_group" "autoscale" {
-  name                 = "autoscaling-group"
-  desired_capacity     = 2
-  max_size             = 3
-  min_size             = 2
-  health_check_type    = "EC2"
-  termination_policies = ["OldestInstance"]
-  vpc_zone_identifier  = [aws_subnet.lab_006_az1_sub.id, aws_subnet.lab_006_az2_sub.id]
-  launch_configuration = aws_launch_configuration.configuration.name
+  name                      = "autoscaling-group"
+  desired_capacity          = 2
+  max_size                  = 3
+  min_size                  = 1
+  health_check_type         = "EC2"
+  termination_policies      = ["OldestInstance"]
+  vpc_zone_identifier       = [aws_subnet.lab_006_az1_sub.id, aws_subnet.lab_006_az2_sub.id]
+  launch_configuration      = aws_launch_configuration.configuration.name
+  wait_for_capacity_timeout = "15"
 }
 
 # security groups
