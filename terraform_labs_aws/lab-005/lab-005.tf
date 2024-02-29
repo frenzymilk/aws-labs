@@ -52,7 +52,7 @@ resource "aws_lb" "alb" {
 }
 
 resource "aws_lb_target_group" "target_group_http" {
-  name        = "alb_http_tg"
+  name        = "alb-http-tg"
   port        = 80
   protocol    = "HTTP"
   target_type = "instance"
