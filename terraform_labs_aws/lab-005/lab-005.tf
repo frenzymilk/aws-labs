@@ -49,8 +49,8 @@ resource "aws_lb" "alb" {
 
 }
 
-resource "aws_lb_target_group" "target_group_http" {
-  name        = "alb-http-tg"
+resource "aws_lb_target_group" "target_http" {
+  name        = "http-tg"
   port        = 80
   protocol    = "HTTP"
   target_type = "instance"
@@ -156,7 +156,7 @@ resource "aws_security_group" "http_access_sg" {
     from_port       = 80
     to_port         = 80
     protocol        = "tcp"
-    security_groups = ["aws_security_group.alb_sg.id"]
+    security_groups = [aws_security_group.alb_sg.id]
   }
 
   egress {
@@ -170,7 +170,7 @@ resource "aws_security_group" "http_access_sg" {
 }
 
 resource "aws_security_group" "alb_sg" {
-  name        = "AWS remote access"
+  name        = "http access"
   description = "Enable HTTP forwarding and remote access"
   vpc_id      = aws_vpc.lab_005_vpc.id
 
