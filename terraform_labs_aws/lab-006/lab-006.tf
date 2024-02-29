@@ -60,6 +60,7 @@ resource "aws_launch_configuration" "configuration" {
   name_prefix     = "autoscaling_template_"
   image_id        = var.ec2_ami
   instance_type   = var.ec2_instance_type
+  key_name        = var.ec2_ssh_key
   security_groups = [aws_security_group.remote_http_access_sg.id]
   user_data       = <<-EOL
                     #!/bin/bash -xe
@@ -101,6 +102,13 @@ resource "aws_security_group" "remote_http_access_sg" {
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["${var.my_public_ip}/32"]
   }
 
   egress {
