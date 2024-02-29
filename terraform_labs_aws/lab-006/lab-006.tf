@@ -73,10 +73,7 @@ resource "aws_launch_configuration" "configuration" {
                     myname = $(hostname)
                     echo "This is INSTANCE $myname " > index.html
                     EOL
-  lifecycle {
-    create_before_destroy = true
-    ignore_changes        = ["desired_capacity"]
-  }
+
 
 }
 
