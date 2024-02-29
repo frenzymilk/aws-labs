@@ -10,15 +10,20 @@ resource "aws_instance" "simple_ec2" {
 }
 
 resource "aws_instance" "bastion_ec2" {
-  ami               = var.ec2_ami
-  instance_type     = var.ec2_instance_type
-  source_dest_check = false
+  ami           = var.ec2_ami
+  instance_type = var.ec2_instance_type
+  #source_dest_check = false
   tags = {
     Name = "bastion-ec2"
   }
-  key_name               = var.ec2_ssh_key
-  subnet_id              = aws_subnet.lab_004_public_sub.id
-  vpc_security_group_ids = [aws_security_group.nat_bastion_access_sg.id]
+  key_name = var.ec2_ssh_key
+  #subnet_id              = aws_subnet.lab_004_public_sub.id
+  #vpc_security_group_ids = [aws_security_group.nat_bastion_access_sg.id]
+
+  network_interface {
+    network_interface_id = aws_network_interface.bastion_eni.id
+    device_index         = 0
+  }
 
   user_data = <<-EOL
               #!/bin/bash -xe
@@ -27,7 +32,7 @@ resource "aws_instance" "bastion_ec2" {
               systemctl start iptables
               echo "net.ipv4.ip_forward=1" >> /etc/sysctl.d/custom-ip-forwarding.conf
               sysctl -p /etc/sysctl.d/custom-ip-forwarding.conf
-              interface=$(netstat -i | awk 'NR==4{ print $1 }')
+              interface=$(netstat -i | awk 'NR==3{ print $1 }')
               /sbin/iptables -t nat -A POSTROUTING -o $interface -j MASQUERADE
               /sbin/iptables -F FORWARD
               service iptables save
@@ -44,9 +49,8 @@ resource "aws_network_interface" "bastion_eni" {
   security_groups   = [aws_security_group.nat_bastion_access_sg.id]
   source_dest_check = false
 
-  attachment {
-    instance     = aws_instance.bastion_ec2.id
-    device_index = 1
+  tags = {
+    Name = "primary_network_interface"
   }
 }
 
