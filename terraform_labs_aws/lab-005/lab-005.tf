@@ -149,7 +149,7 @@ resource "aws_route_table_association" "lab_005_az2_rta" {
 
 resource "aws_security_group" "http_access_sg" {
   name        = "AWS remote access"
-  description = "Enable HTTP forwarding and remote access"
+  description = "Enable HTTP access from loadbalancer"
   vpc_id      = aws_vpc.lab_005_vpc.id
 
   ingress {
@@ -171,7 +171,7 @@ resource "aws_security_group" "http_access_sg" {
 
 resource "aws_security_group" "alb_sg" {
   name        = "http access"
-  description = "Enable HTTP forwarding and remote access"
+  description = "Enable HTTP access from world"
   vpc_id      = aws_vpc.lab_005_vpc.id
 
   ingress {

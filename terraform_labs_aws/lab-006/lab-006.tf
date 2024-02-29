@@ -12,7 +12,7 @@ data "aws_route_table" "default_routetable" {
 }
 
 resource "aws_route" "r" {
-  route_table_id         = aws_route_table.default_routetable.id
+  route_table_id         = data.aws_route_table.default_routetable.id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.lab_006_gw.id
 }
@@ -46,12 +46,12 @@ resource "aws_internet_gateway" "lab_006_gw" {
 
 resource "aws_route_table_association" "lab_006_az1_rta" {
   subnet_id      = aws_subnet.lab_006_az1_sub.id
-  route_table_id = aws_route_table.default_routetable.id
+  route_table_id = data.aws_route_table.default_routetable.id
 }
 
 resource "aws_route_table_association" "lab_006_az2_rta" {
   subnet_id      = aws_subnet.lab_006_az2_sub.id
-  route_table_id = aws_route_table.default_routetable.id
+  route_table_id = data.aws_route_table.default_routetable.id
 }
 
 # auto scaling
@@ -70,7 +70,8 @@ resource "aws_launch_configuration" "configuration" {
                     systemctl enable httpd
                     systemctl start httpd
                     cd /var/www/html
-                    echo "This is INSTANCE ${HOSTNAME}" > index.html
+                    myname = $(hostname)
+                    echo "This is INSTANCE $myname " > index.html
                     EOL
   lifecycle {
     create_before_destroy = true
@@ -94,15 +95,8 @@ resource "aws_autoscaling_group" "autoscale" {
 
 resource "aws_security_group" "remote_http_access_sg" {
   name        = "AWS remote access"
-  description = "Enable HTTP forwarding and remote access"
+  description = "Enable HTTP  access from loadbalancer"
   vpc_id      = aws_vpc.lab_006_vpc.id
-
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["${var.my_public_ip}/32"]
-  }
 
   ingress {
     from_port       = 80
