@@ -5,8 +5,7 @@ resource "aws_instance" "server_az1" {
     Name = "server_az1"
   }
   subnet_id              = aws_subnet.lab_005_az1_sub.id
-  vpc_security_group_ids = [aws_security_group.remote_http_access_sg.id]
-  #key_name               = var.ec2_ssh_key
+  vpc_security_group_ids = [aws_security_group.http_access_sg.id]
 
   user_data = <<-EOL
               #!/bin/bash -xe
@@ -26,8 +25,7 @@ resource "aws_instance" "server_az2" {
     Name = "server_az2"
   }
   subnet_id              = aws_subnet.lab_005_az2_sub.id
-  vpc_security_group_ids = [aws_security_group.remote_http_access_sg.id]
-  #key_name               = var.ec2_ssh_key
+  vpc_security_group_ids = [aws_security_group.http_access_sg.id]
 
   user_data = <<-EOL
               #!/bin/bash -xe
@@ -70,24 +68,6 @@ resource "aws_lb_target_group" "target_group_http" {
   }
 }
 
-resource "aws_lb_target_group" "target_group_https" {
-  name        = "alb-https-tg"
-  port        = 443
-  protocol    = "HTTPS"
-  target_type = "instance"
-  vpc_id      = aws_vpc.lab_005_vpc.id
-
-  health_check {
-    enabled             = true
-    interval            = 10
-    path                = "/"
-    port                = "traffic-port"
-    protocol            = "HTTPS"
-    timeout             = 5
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-  }
-}
 
 resource "aws_lb_listener" "alb_listener_http" {
   load_balancer_arn = aws_lb.alb.arn
@@ -100,34 +80,14 @@ resource "aws_lb_listener" "alb_listener_http" {
   }
 }
 
-resource "aws_lb_listener" "alb_listener_https" {
-  load_balancer_arn = aws_lb.alb.arn
-  port              = 443
-  protocol          = "HTTPS"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.target_group_https.arn
-  }
-}
-
 resource "aws_lb_target_group_attachment" "ec2_attach_1" {
   target_group_arn = aws_lb_target_group.target_group_http.arn
   target_id        = aws_instance.server_az1.id
 }
 
-resource "aws_lb_target_group_attachment" "ec2_attach_11" {
-  target_group_arn = aws_lb_target_group.target_group_https.arn
-  target_id        = aws_instance.server_az1.id
-}
 
 resource "aws_lb_target_group_attachment" "ec2_attach_2" {
   target_group_arn = aws_lb_target_group.target_group_http.arn
-  target_id        = aws_instance.server_az2.id
-}
-
-resource "aws_lb_target_group_attachment" "ec2_attach_21" {
-  target_group_arn = aws_lb_target_group.target_group_https.arn
   target_id        = aws_instance.server_az2.id
 }
 
@@ -187,18 +147,11 @@ resource "aws_route_table_association" "lab_005_az2_rta" {
 
 # security groups
 
-resource "aws_security_group" "remote_http_access_sg" {
+resource "aws_security_group" "http_access_sg" {
   name        = "AWS remote access"
   description = "Enable HTTP forwarding and remote access"
   vpc_id      = aws_vpc.lab_005_vpc.id
 
-  /*ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["${var.my_public_ip}/32"]
-  }
-*/
   ingress {
     from_port       = 80
     to_port         = 80
@@ -221,13 +174,6 @@ resource "aws_security_group" "alb_sg" {
   description = "Enable HTTP forwarding and remote access"
   vpc_id      = aws_vpc.lab_005_vpc.id
 
-  /*ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["${var.my_public_ip}/32"]
-  }
-*/
   ingress {
     from_port   = 80
     to_port     = 80
