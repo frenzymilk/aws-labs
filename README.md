@@ -1,3 +1,7 @@
+This repository is a fork from Thyago Mota's **aws-labs**.
+I extended it using Infrastructure as Code, to allow for an automated deployment of the labs in AWS, using Github Actions. The workflows files can be found in the *.github/workflows* directory.
+The Terraform scripts can be found in the *terraform_aws_labs* directory, containing one directory for each lab.
+
 # aws-labs
 A collection of hands-on labs to help learning the fundamentals of AWS cloud computing services. Each lab has:
 
